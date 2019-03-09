@@ -15,6 +15,9 @@ import top.imyzt.study.miaosha.service.MiaoshaUserService;
 import top.imyzt.study.miaosha.utils.ValidatorUtil;
 import top.imyzt.study.miaosha.vo.LoginVo;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
 /**
  * @author imyzt
  * @date 2019/3/8 17:27
@@ -35,24 +38,9 @@ public class LoginController {
 
     @PostMapping("/do_login")
     @ResponseBody
-    public Result login(LoginVo loginVo) {
-
-        String password = loginVo.getPassword();
-        String mobile = loginVo.getMobile();
-
-        if (StringUtils.isEmpty(password)) {
-            return Result.error(CodeMsg.PASSWORD_EMPTY);
-        } else if (StringUtils.isEmpty(mobile)) {
-            return Result.error(CodeMsg.MOBILE_EMPTY);
-        } else if (!ValidatorUtil.isMobile(mobile)) {
-            return Result.error(CodeMsg.MOBILE_ERROR);
-        }
-
-        CodeMsg codeMsg = userService.login(loginVo);
-        if (codeMsg.getCode() == CodeMsg.SUCCESS_CODE) {
-            return Result.success(true);
-        }
-        return Result.error(codeMsg);
+    public Result login(HttpServletResponse response, @Valid LoginVo loginVo) {
+        boolean login = userService.login(response, loginVo);
+        return Result.success(true);
     }
 
 
