@@ -1,0 +1,40 @@
+spring:
+  thymeleaf:
+    cache: false
+    enabled: true
+    encoding: UTF-8
+    mode: HTML5
+  datasource:
+    url: jdbc:mysql://localhost:3306/miaosha?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
+    username: root
+    password: ntech
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      filters: stat
+      max-active: 2
+      initial-size: 1
+      max-wait: 60000
+      min-idle: 1
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 30000
+      validation-query: select 'x'
+      test-while-idle: true
+      test-on-return: false
+      test-on-borrow: false
+mybatis:
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  type-aliases-package: top.imyzt.study.miaosha.domain
+  configuration:
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 3000
+redis:
+  host: localhost
+  port: 6379
+  database: 0
+  timeout: 3000
+  password:
+  pool-max-total: 10
+  pool-max-idle: 10
+  pool-max-wait: 3000
