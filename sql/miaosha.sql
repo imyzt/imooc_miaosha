@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80014
 File Encoding         : 65001
 
-Date: 2019-03-09 18:00:45
+Date: 2019-03-14 20:11:19
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -28,7 +28,13 @@ CREATE TABLE `goods` (
   `goods_price` decimal(10,2) DEFAULT '0.00' COMMENT '商品单价',
   `goods_stock` int(11) DEFAULT '0' COMMENT '库存,-1表示没有限制',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Records of goods
+-- ----------------------------
+INSERT INTO `goods` VALUES ('1', 'iPhoneX', 'iPhoneX', '/img/iphonex.png', '123', '10000.00', '10');
+INSERT INTO `goods` VALUES ('2', '华为mate10', 'mate10', '/img/meta10.png', '321', '4000.00', '10');
 
 -- ----------------------------
 -- Table structure for miaosha_goods
@@ -42,7 +48,13 @@ CREATE TABLE `miaosha_goods` (
   `start_date` datetime DEFAULT NULL COMMENT '秒杀开始时间',
   `end_date` datetime DEFAULT NULL COMMENT '秒杀结束时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Records of miaosha_goods
+-- ----------------------------
+INSERT INTO `miaosha_goods` VALUES ('1', '1', '0.01', '10', '2019-03-13 17:20:05', '2019-03-14 16:52:09');
+INSERT INTO `miaosha_goods` VALUES ('2', '2', '0.02', '10', '2019-03-13 16:52:22', '2019-03-14 16:52:25');
 
 -- ----------------------------
 -- Table structure for miaosha_order
@@ -55,6 +67,10 @@ CREATE TABLE `miaosha_order` (
   `goods_id` bigint(20) DEFAULT NULL COMMENT '商品id',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Records of miaosha_order
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for miaosha_user
@@ -71,6 +87,11 @@ CREATE TABLE `miaosha_user` (
   `login_count` int(11) DEFAULT '0' COMMENT '总登录次数',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Records of miaosha_user
+-- ----------------------------
+INSERT INTO `miaosha_user` VALUES ('12222222222', 'yzt', '2862d54e5727377e50753f2a3fd5231e', '12a%#Q#$#@', null, '2019-03-09 10:43:37', '2019-03-09 10:43:40', '1');
 
 -- ----------------------------
 -- Table structure for order_info
@@ -92,6 +113,10 @@ CREATE TABLE `order_info` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
+-- Records of order_info
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for user
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
@@ -100,3 +125,8 @@ CREATE TABLE `user` (
   `name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Records of user
+-- ----------------------------
+INSERT INTO `user` VALUES ('1', 'yzt');
