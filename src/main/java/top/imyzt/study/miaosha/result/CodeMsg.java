@@ -32,6 +32,11 @@ public class CodeMsg {
     public static CodeMsg PASSWORD_ERROR = new CodeMsg(500215, "密码错误");
 
 
+    // 秒杀模块
+
+    public static CodeMsg MIAO_SHA_OVER = new CodeMsg(500500, "库存不足");
+    public static CodeMsg REPEATE_MIAOSHA = new CodeMsg(500501, "不能重复下单");
+
 
     private CodeMsg(int code, String msg) {
         this.code = code;

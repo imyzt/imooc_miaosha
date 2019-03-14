@@ -31,7 +31,7 @@ public class LoginController {
     @Autowired
     private MiaoshaUserService userService;
 
-    @GetMapping("/login")
+    @GetMapping({"/login"})
     public String login() {
         return "login";
     }

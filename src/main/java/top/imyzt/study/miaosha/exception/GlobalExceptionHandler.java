@@ -1,5 +1,6 @@
 package top.imyzt.study.miaosha.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,10 +18,13 @@ import java.util.List;
  * @description GlobalExceptionHandler
  */
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     public Result<String> exception(HttpServletRequest request, Exception e) {
+
+        e.printStackTrace();
 
         if (e instanceof GlobalException) {
             GlobalException globalException = (GlobalException) e;

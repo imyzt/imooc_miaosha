@@ -4,6 +4,10 @@ spring:
     enabled: true
     encoding: UTF-8
     mode: HTML5
+    prefix: classpath:/templates/
+    suffix: .html
+    servlet:
+      content-type: text/html
   datasource:
     url: jdbc:mysql://localhost:3306/miaosha?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
     username: root
