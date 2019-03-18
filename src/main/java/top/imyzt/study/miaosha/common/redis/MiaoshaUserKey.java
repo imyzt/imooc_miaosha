@@ -14,5 +14,6 @@ public class MiaoshaUserKey extends AbstractPrefix {
     }
 
     public static MiaoshaUserKey TOKEN = new MiaoshaUserKey(TOKEN_EXPIRE, "token");
+    public static MiaoshaUserKey getById = new MiaoshaUserKey(0, "getById");
 
 }

@@ -49,20 +49,23 @@ public class GoodsController {
         this.thymeleafViewResolver = thymeleafViewResolver;
     }
 
+    /**
+     * QPS 5335
+     */
     @GetMapping(value = "/to_list", produces = "text/html;charset=UTF-8")
     public @ResponseBody String toList(HttpServletRequest request, HttpServletResponse response,
                          Model model, MiaoshaUser user) {
-
-        List <GoodsVo> goodsVos = goodsService.listGoodsVo();
-
-        model.addAttribute("user", user);
-        model.addAttribute("goodsList", goodsVos);
 
         // 取缓存
         String html = redisService.get(GoodsKey.getGoodsList, "", String.class);
         if (StringUtils.isNotEmpty(html)) {
             return html;
         }
+
+        List <GoodsVo> goodsVos = goodsService.listGoodsVo();
+
+        model.addAttribute("user", user);
+        model.addAttribute("goodsList", goodsVos);
 
         // 手动渲染
         WebContext webContext = new WebContext(request, response, request.getServletContext(), request.getLocale(), model.asMap());
