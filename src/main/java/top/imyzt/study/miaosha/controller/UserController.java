@@ -1,14 +1,10 @@
 package top.imyzt.study.miaosha.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.imyzt.study.miaosha.common.redis.UserKey;
-import top.imyzt.study.miaosha.domain.User;
+import top.imyzt.study.miaosha.domain.MiaoshaUser;
 import top.imyzt.study.miaosha.result.Result;
-import top.imyzt.study.miaosha.service.RedisService;
-import top.imyzt.study.miaosha.service.UserService;
 
 /**
  * @author imyzt
@@ -16,32 +12,12 @@ import top.imyzt.study.miaosha.service.UserService;
  * @description UserController
  */
 @RestController
+@RequestMapping("user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private RedisService redisService;
-
-    @GetMapping("{id}")
-    public Result<User> getUserById(@PathVariable("id") Integer id) {
-        return Result.success(userService.getById(id));
-    }
-
-    @GetMapping("/redis/set")
-    public Result redisSet() {
-        User user = new User();
-        user.setId(1);
-        user.setName("yzt");
-
-        boolean uyzt = redisService.set(UserKey.GET_BY_ID,"1", user);
-        return Result.success(uyzt);
-    }
-
-    @GetMapping("/redis/get")
-    public Result redisGet() {
-        User uyzt = redisService.get(UserKey.GET_BY_ID,"1", User.class);
-        return Result.success(uyzt);
+    @GetMapping("/info")
+    public Result <MiaoshaUser> info(MiaoshaUser user) {
+        return Result.success(user);
     }
 
 }

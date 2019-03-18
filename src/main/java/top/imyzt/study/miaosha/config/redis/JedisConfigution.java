@@ -1,13 +1,10 @@
 package top.imyzt.study.miaosha.config.redis;
 
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-
-import java.util.Objects;
 
 /**
  * @author imyzt
@@ -17,8 +14,12 @@ import java.util.Objects;
 @Configuration
 public class JedisConfigution {
 
+    private final RedisConfig redisConfig;
+
     @Autowired
-    private RedisConfig redisConfig;
+    public JedisConfigution(RedisConfig redisConfig) {
+        this.redisConfig = redisConfig;
+    }
 
     @Bean
     public JedisPoolConfig jedisPoolConfig() {
