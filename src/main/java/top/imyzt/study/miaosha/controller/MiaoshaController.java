@@ -2,13 +2,14 @@ package top.imyzt.study.miaosha.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import top.imyzt.study.miaosha.domain.MiaoshaOrder;
 import top.imyzt.study.miaosha.domain.MiaoshaUser;
 import top.imyzt.study.miaosha.domain.OrderInfo;
 import top.imyzt.study.miaosha.result.CodeMsg;
+import top.imyzt.study.miaosha.result.Result;
 import top.imyzt.study.miaosha.service.GoodsService;
 import top.imyzt.study.miaosha.service.MiaoshaService;
 import top.imyzt.study.miaosha.service.OrderService;
@@ -32,38 +33,36 @@ public class MiaoshaController {
     @Autowired
     private MiaoshaService miaoshaService;
 
+    /**
+     * 2.0 页面静态化处理, 前后端通过json交互
+     * @param user
+     * @param goodsId
+     * @return
+     */
     @PostMapping("do_miaosha")
-    public String miaosha(Model model, MiaoshaUser user, Long goodsId) {
+    public @ResponseBody Result miaosha(MiaoshaUser user, Long goodsId) {
 
         // 未登录
         if (null == user) {
-            return "/login/login";
+            return Result.error(CodeMsg.SESSION_ERROR);
         }
-
-        model.addAttribute("user", user);
 
         // 判断库存
         GoodsVo goodsVo = goodsService.getGoodsVoByGoodsId(goodsId);
         if (null == goodsVo || goodsVo.getStockCount() <= 0) {
-            model.addAttribute("errorMsg", CodeMsg.MIAO_SHA_OVER.getMsg());
-            return "miaosha_fail";
+            return Result.error(CodeMsg.MIAO_SHA_OVER);
         }
 
         // 判断是否重复下单
         MiaoshaOrder miaoshaOrder = orderService.getMiaoshaOrderByUserIdGoodsId(user.getId(), goodsId);
         if (null != miaoshaOrder) {
-            model.addAttribute("errorMsg", CodeMsg.REPEATE_MIAOSHA.getMsg());
-            return "miaosha_fail";
+            return Result.error(CodeMsg.REPEATE_MIAOSHA);
         }
 
         // 减库存,下订单 写入订单
         OrderInfo orderInfo = miaoshaService.miaosha(user, goodsVo);
 
-        model.addAttribute("orderInfo", orderInfo);
-        model.addAttribute("goods", goodsVo);
-
-
-        return "order_detail";
+        return Result.success(orderInfo);
     }
 
 }

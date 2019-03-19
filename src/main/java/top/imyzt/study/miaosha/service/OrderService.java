@@ -2,6 +2,7 @@ package top.imyzt.study.miaosha.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import top.imyzt.study.miaosha.common.redis.OrderKey;
 import top.imyzt.study.miaosha.domain.MiaoshaOrder;
 import top.imyzt.study.miaosha.domain.MiaoshaUser;
 import top.imyzt.study.miaosha.domain.OrderInfo;
@@ -21,9 +22,14 @@ public class OrderService {
 
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
+    private RedisService redisService;
 
     public MiaoshaOrder getMiaoshaOrderByUserIdGoodsId(Long userId, Long goodsId) {
-        return orderMapper.getMiaoshaOrderByUserIdGoodsId(userId, goodsId);
+
+//        return orderMapper.getMiaoshaOrderByUserIdGoodsId(userId, goodsId);
+
+        return redisService.get(OrderKey.getMiaoshaOrderByUidGid, ""+userId+"_"+goodsId, MiaoshaOrder.class);
     }
 
     public OrderInfo createOrder(MiaoshaUser user, GoodsVo goodsVo) {
@@ -51,6 +57,12 @@ public class OrderService {
 
         orderMapper.insertMiaoshaOrder(miaoshaOrder);
 
+        redisService.set(OrderKey.getMiaoshaOrderByUidGid, ""+user.getId()+"_"+goodsVo.getId(), miaoshaOrder);
+
         return orderInfo;
+    }
+
+    public OrderInfo getById(long orderId) {
+        return orderMapper.getById(orderId);
     }
 }

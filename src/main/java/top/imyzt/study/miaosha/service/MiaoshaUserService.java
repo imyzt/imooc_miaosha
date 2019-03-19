@@ -1,5 +1,6 @@
 package top.imyzt.study.miaosha.service;
 
+import cn.hutool.core.util.RandomUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import top.imyzt.study.miaosha.vo.LoginVo;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * @author imyzt
@@ -46,10 +48,25 @@ public class MiaoshaUserService {
         miaoshaUser = userMapper.getById(id);
 
         if (null != miaoshaUser) {
-            redisService.set(MiaoshaUserKey.getById, "" + id, MiaoshaUser.class);
+            redisService.set(MiaoshaUserKey.getById, "" + id, miaoshaUser);
         }
 
         return miaoshaUser;
+    }
+
+    public MiaoshaUser register (MiaoshaUser user) {
+
+        if (null == user) {
+            throw new GlobalException(CodeMsg.SERVER_ERROR);
+        }
+
+        String formPass = user.getPassword();
+        String salt = RandomUtil.randomString(10);
+        String dbPass = MD5Util.formPassToDBPass(formPass, salt);
+        user.setPassword(dbPass);
+        user.setSalt(salt);
+
+        return userMapper.insert(user);
     }
 
     public MiaoshaUser updatePassword(String token, long id, String form) {

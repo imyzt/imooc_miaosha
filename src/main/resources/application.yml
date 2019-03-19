@@ -26,6 +26,16 @@ spring:
       test-while-idle: true
       test-on-return: false
       test-on-borrow: false
+  resources:
+    add-mappings: true
+    cache:
+      period: 3600s
+    chain:
+      cache: true
+      enabled: true
+      compressed: true
+      html-application-cache: true
+    static-locations: classpath:/static/
 mybatis:
   mapper-locations: classpath:/mapper/*Mapper.xml
   type-aliases-package: top.imyzt.study.miaosha.domain

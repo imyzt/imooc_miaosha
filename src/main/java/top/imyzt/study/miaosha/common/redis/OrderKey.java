@@ -7,7 +7,10 @@ package top.imyzt.study.miaosha.common.redis;
  */
 public class OrderKey extends AbstractPrefix {
 
-    public OrderKey(int expireSeconds, String prefix) {
-        super(expireSeconds, prefix);
+
+    public OrderKey(String prefix) {
+        super(prefix);
     }
+
+    public static OrderKey getMiaoshaOrderByUidGid = new OrderKey("moug");
 }

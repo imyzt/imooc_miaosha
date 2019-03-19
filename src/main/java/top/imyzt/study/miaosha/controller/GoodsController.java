@@ -3,26 +3,21 @@ package top.imyzt.study.miaosha.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.context.WebContext;
-import org.thymeleaf.spring5.context.webflux.SpringWebFluxContext;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import top.imyzt.study.miaosha.common.redis.GoodsKey;
-import top.imyzt.study.miaosha.domain.Goods;
 import top.imyzt.study.miaosha.domain.MiaoshaUser;
 import top.imyzt.study.miaosha.result.Result;
 import top.imyzt.study.miaosha.service.GoodsService;
-import top.imyzt.study.miaosha.service.MiaoshaUserService;
 import top.imyzt.study.miaosha.service.RedisService;
+import top.imyzt.study.miaosha.vo.GoodsDetailVo;
 import top.imyzt.study.miaosha.vo.GoodsVo;
-import top.imyzt.study.miaosha.vo.LoginVo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.time.Instant;
 import java.util.List;
 
@@ -77,8 +72,8 @@ public class GoodsController {
         return html;
     }
 
-    @GetMapping(value = "to_detail/{goodsId}", produces = "text/html;charset=UTF-8")
-    public @ResponseBody String getDetail(HttpServletRequest request, HttpServletResponse response,
+    @GetMapping(value = "to_detail2/{goodsId}", produces = "text/html;charset=UTF-8")
+    public @ResponseBody String getDetail2(HttpServletRequest request, HttpServletResponse response,
                             Model model, MiaoshaUser user, @PathVariable Long goodsId) {
 
         model.addAttribute("user", user);
@@ -127,6 +122,41 @@ public class GoodsController {
             redisService.set(GoodsKey.getGoodsDetail, ""+goodsId, html);
         }
         return html;
+    }
+
+    @GetMapping(value = "/detail/{goodsId}")
+    public @ResponseBody Result <GoodsDetailVo> getDetail(MiaoshaUser user, @PathVariable Long goodsId) {
+
+        // 手动渲染
+        GoodsVo goodsVo = goodsService.getGoodsVoByGoodsId(goodsId);
+
+        long startTme = goodsVo.getStartDate().getTime();
+        long endTime = goodsVo.getEndDate().getTime();
+        long now = Instant.now().getEpochSecond() * 1000;
+
+        int miaoshaStatus;
+        int remainSeconds;
+
+        // 还没开始
+        if (now < startTme) {
+            miaoshaStatus = 0;
+            remainSeconds = (int) (startTme - now) / 1000;
+        // 已结束
+        } else if (now > endTime) {
+            miaoshaStatus = 2;
+            remainSeconds = -1;
+        } else {
+            miaoshaStatus = 1;
+            remainSeconds = 0;
+        }
+
+        GoodsDetailVo detail = new GoodsDetailVo();
+        detail.setGoods(goodsVo);
+        detail.setMiaoshaStatus(miaoshaStatus);
+        detail.setRemainSeconds(remainSeconds);
+        detail.setUser(user);
+
+        return Result.success(detail);
     }
 
 }

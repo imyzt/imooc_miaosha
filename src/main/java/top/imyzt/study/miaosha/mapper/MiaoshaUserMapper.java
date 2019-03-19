@@ -17,4 +17,8 @@ public interface MiaoshaUserMapper {
 
     @Update("UPDATE miaosha_user SET password = #{password} WHERE id = #{id} ")
     void update(MiaoshaUser updateUser);
+
+    @Select("INSERT INTO miaosha_user (id, nickname, password, salt, head, redister_date, login_count) " +
+            "VALUES (#{id}, #{nickname}, #{password}, #{salt}, #{head}, #{registerDate}, #{loginCount} )")
+    MiaoshaUser insert(MiaoshaUser user);
 }
