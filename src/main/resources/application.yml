@@ -36,6 +36,33 @@ spring:
       compressed: true
       html-application-cache: true
     static-locations: classpath:/static/
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    listener:
+      simple:
+        # 消费者数量
+        concurrency: 10
+        max-concurrency: 10
+        # 消费者每次取的数量
+        prefetch: 1
+        auto-startup: true
+        # 消费失败后重试
+        default-requeue-rejected: true
+        retry:
+          # 启动重试
+          enabled: true
+          # 1s重试一次
+          initial-interval: 1000s
+          # 最大重试三次
+          max-attempts: 3
+          # 最大间隔10s
+          max-interval: 10000s
+          # 上一次等待时间 * multiplier = 下一次重试的时间. (0 < 下次重试时间 <= max-interval)
+          multiplier: 1.0
 mybatis:
   mapper-locations: classpath:/mapper/*Mapper.xml
   type-aliases-package: top.imyzt.study.miaosha.domain

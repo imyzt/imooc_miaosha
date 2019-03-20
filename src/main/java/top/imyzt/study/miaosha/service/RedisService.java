@@ -7,6 +7,9 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import top.imyzt.study.miaosha.common.redis.KeyPrefix;
 
+import static top.imyzt.study.miaosha.utils.ConvertUtil.beanToStr;
+import static top.imyzt.study.miaosha.utils.ConvertUtil.strToBean;
+
 /**
  * @author imyzt
  * @date 2019/3/8 18:12
@@ -112,41 +115,6 @@ public class RedisService {
         try(Jedis jedis = jedisPool.getResource()) {
             String realKey = prefix.getRealKey(key);
             return jedis.decr(realKey);
-        }
-    }
-
-
-    private <T> String beanToStr(T value) {
-        if (null == value) {
-            return null;
-        }
-
-        Class <?> clazz = value.getClass();
-        if (clazz == int.class || clazz == Integer.class) {
-            return "" + value;
-        } else if (clazz == String.class) {
-            return (String) value;
-        } else if (clazz == long.class || clazz == Long.class) {
-            return "" + value;
-        } else {
-            return JSON.toJSONString(value);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T strToBean(String value, Class<T> clazz) {
-        if (null == value || value.length() <= 0 || null == clazz) {
-            return null;
-        }
-
-        if (clazz == int.class || clazz == Integer.class) {
-            return (T) Integer.valueOf(value);
-        } else if (clazz == String.class) {
-            return (T) value;
-        } else if (clazz == long.class || clazz == Long.class) {
-            return (T) Long.valueOf(value);
-        } else {
-            return JSON.toJavaObject(JSON.parseObject(value), clazz);
         }
     }
 
