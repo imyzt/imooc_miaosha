@@ -22,4 +22,5 @@ public interface Constant {
     String HEADERS_QUEUE = "headers.queue";
     String HEADERS_EXCHANGE = "headersExchange";
 
+    String MIAOSHA_QUEUE = "miaosha.queue";
 }

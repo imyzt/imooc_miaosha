@@ -25,15 +25,19 @@ public class MD5Util {
         return md5(str);
     }
 
-    public static String inputPassToDBPass(String src, String saltDB) {
+    /*public static String inputPassToDBPass(String src, String saltDB) {
         String str = saltDB.charAt(4) + saltDB.substring(4) + saltDB.substring(0, 5) + src + saltDB.charAt(9);
         return md5(str);
+    }*/
+
+    public static String inputPassToDBPass(String src, String saltDB) {
+        return formPassToDBPass(inputPassToFormPass(src), saltDB);
     }
 
     public static void main(String[] args) {
         System.out.println(inputPassToFormPass("123456"));
-        System.out.println(formPassToDBPass(inputPassToFormPass("123456"), SALT));
-        System.out.println(inputPassToDBPass("123456", SALT));
+        System.out.println(formPassToDBPass("b4accafee38035d4a1f0532785056d14", "y95834zn39"));
+        System.out.println(inputPassToDBPass("123456", "y95834zn39"));
     }
 
 }

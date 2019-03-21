@@ -2,6 +2,7 @@ package top.imyzt.study.miaosha.service;
 
 import cn.hutool.core.util.RandomUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.imyzt.study.miaosha.common.redis.MiaoshaUserKey;
@@ -60,13 +61,16 @@ public class MiaoshaUserService {
             throw new GlobalException(CodeMsg.SERVER_ERROR);
         }
 
+        MiaoshaUser registerUser = new MiaoshaUser();
+        BeanUtils.copyProperties(user, registerUser);
+
         String formPass = user.getPassword();
         String salt = RandomUtil.randomString(10);
         String dbPass = MD5Util.formPassToDBPass(formPass, salt);
-        user.setPassword(dbPass);
-        user.setSalt(salt);
+        registerUser.setPassword(dbPass);
+        registerUser.setSalt(salt);
 
-        return userMapper.insert(user);
+        return userMapper.insert(registerUser);
     }
 
     public MiaoshaUser updatePassword(String token, long id, String form) {

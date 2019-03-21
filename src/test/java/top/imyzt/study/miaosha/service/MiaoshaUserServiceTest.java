@@ -8,6 +8,7 @@ import cn.hutool.http.HttpStatus;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ import static org.junit.Assert.*;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
+@Slf4j
 public class MiaoshaUserServiceTest {
 
     @Autowired
@@ -41,9 +43,10 @@ public class MiaoshaUserServiceTest {
     @Test
     public void register() {
 
+        long epochSecond = Instant.now().getEpochSecond();
         List<MiaoshaUser> miaoshaUsers = new CopyOnWriteArrayList<>();
 
-        IntStream.range(1, 2)
+        IntStream.range(1, 5000)
                 .parallel().forEach(i -> {
 
             // 生成用户
@@ -56,11 +59,12 @@ public class MiaoshaUserServiceTest {
             user.setRegisterDate(Date.from(Instant.now()));
             user.setLoginCount(1);
 
+            // 注册用户
+            userService.register(user);
+
             // 保存用户
             miaoshaUsers.add(user);
-
-            user.setPassword(formPass);
-            userService.register(user);
+            log.info("save user index ={}", user.getId());
         });
 
         CopyOnWriteArrayList <String> tokens = new CopyOnWriteArrayList <>();
@@ -78,10 +82,12 @@ public class MiaoshaUserServiceTest {
             String token = execute.getCookie("token").getValue();
 
             tokens.add(user.getId()+","+token);
+            log.info("save token index ={}", user.getId());
 
         });
 
         FileUtil.writeUtf8Lines(tokens, "D:/tmp/tokens.txt");
 
+        System.out.println(Instant.now().toEpochMilli() - epochSecond);
     }
 }

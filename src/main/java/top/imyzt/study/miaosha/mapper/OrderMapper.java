@@ -30,7 +30,8 @@ public interface OrderMapper {
     long insert(OrderInfo orderInfo);
 
     @Insert("INSERT INTO miaosha_order (user_id, order_id, goods_id) VALUES (#{userId}, #{orderId}, #{goodsId});")
-    void insertMiaoshaOrder(MiaoshaOrder miaoshaOrder);
+    @SelectKey(keyColumn = "id", keyProperty = "id", resultType = long.class, before = false, statement = "select last_insert_id()")
+    long insertMiaoshaOrder(MiaoshaOrder miaoshaOrder);
 
     @Select("SELECT * FROM miaosha_order WHERE id = #{orderId} ")
     OrderInfo getById(long orderId);

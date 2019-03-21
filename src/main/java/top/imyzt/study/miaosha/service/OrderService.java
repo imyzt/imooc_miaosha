@@ -1,5 +1,6 @@
 package top.imyzt.study.miaosha.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.imyzt.study.miaosha.common.redis.OrderKey;
@@ -18,6 +19,7 @@ import java.util.Date;
  * @description OrderService
  */
 @Service
+@Slf4j
 public class OrderService {
 
     @Autowired
@@ -26,8 +28,6 @@ public class OrderService {
     private RedisService redisService;
 
     public MiaoshaOrder getMiaoshaOrderByUserIdGoodsId(Long userId, Long goodsId) {
-
-//        return orderMapper.getMiaoshaOrderByUserIdGoodsId(userId, goodsId);
 
         return redisService.get(OrderKey.getMiaoshaOrderByUidGid, ""+userId+"_"+goodsId, MiaoshaOrder.class);
     }
@@ -46,19 +46,19 @@ public class OrderService {
         orderInfo.setStatus(0);
         orderInfo.setUserId(user.getId());
 
-        long orderId = orderMapper.insert(orderInfo);
+        orderMapper.insert(orderInfo);
 
         // 下秒杀订单
-
         MiaoshaOrder miaoshaOrder = new MiaoshaOrder();
         miaoshaOrder.setGoodsId(goodsVo.getId());
-        miaoshaOrder.setOrderId(orderId);
+        miaoshaOrder.setOrderId(orderInfo.getId());
         miaoshaOrder.setUserId(user.getId());
 
         orderMapper.insertMiaoshaOrder(miaoshaOrder);
 
         redisService.set(OrderKey.getMiaoshaOrderByUidGid, ""+user.getId()+"_"+goodsVo.getId(), miaoshaOrder);
 
+        log.info("成功下单. userId={}, goodsId={}", user.getId(), goodsVo.getId());
         return orderInfo;
     }
 

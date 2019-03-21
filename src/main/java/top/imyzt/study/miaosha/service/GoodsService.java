@@ -45,9 +45,10 @@ public class GoodsService {
      * 库存 -1
      * @param goodsVo 秒杀商品
      */
-    public void reduceStock(GoodsVo goodsVo) {
+    public boolean reduceStock(GoodsVo goodsVo) {
         MiaoshaOrder miaoshaOrder = new MiaoshaOrder();
         miaoshaOrder.setGoodsId(goodsVo.getId());
-        goodsMapper.reduceStock(miaoshaOrder);
+        int i = goodsMapper.reduceStock(miaoshaOrder);
+        return i > 0;
     }
 }

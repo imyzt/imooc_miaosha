@@ -2,13 +2,13 @@ package top.imyzt.study.miaosha.rabbitmq;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Service;
 import top.imyzt.study.miaosha.common.Constant;
+import top.imyzt.study.miaosha.rabbitmq.dto.MiaoshaMessage;
 import top.imyzt.study.miaosha.utils.ConvertUtil;
 
 import java.util.HashMap;
@@ -24,6 +24,12 @@ public class MqSender {
 
     @Autowired
     private AmqpTemplate amqpTemplate;
+
+    public void miaoshaSender(MiaoshaMessage message) {
+        String msg = ConvertUtil.beanToStr(message);
+        log.debug("miaosha sender={}", msg);
+        amqpTemplate.convertAndSend(Constant.MIAOSHA_QUEUE, msg);
+    }
 
     public void sender(Object message) {
         String msg = ConvertUtil.beanToStr(message);
@@ -58,7 +64,5 @@ public class MqSender {
 
         amqpTemplate.convertAndSend(Constant.HEADERS_EXCHANGE,"", obj);
     }
-
-
 
 }

@@ -15,6 +15,11 @@ import java.util.HashMap;
 @Configuration
 public class RabbitMqConfig {
 
+    @Bean
+    public Queue miaoshaQueue() {
+        return new Queue(Constant.MIAOSHA_QUEUE, true);
+    }
+
     /**
      * Direct模式,exchange
      */
