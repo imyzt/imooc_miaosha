@@ -40,6 +40,9 @@ public class MiaoshaUserServiceTest {
     @Autowired
     private MiaoshaUserService userService;
 
+    /**
+     * 注册N个用户, 并处理登录.将token存入redis中.
+     */
     @Test
     public void register() {
 
