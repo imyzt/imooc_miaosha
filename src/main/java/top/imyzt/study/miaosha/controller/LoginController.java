@@ -28,8 +28,12 @@ import javax.validation.Valid;
 @RequestMapping("login")
 public class LoginController {
 
+    private final MiaoshaUserService userService;
+
     @Autowired
-    private MiaoshaUserService userService;
+    public LoginController(MiaoshaUserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping({"/login"})
     public String login() {

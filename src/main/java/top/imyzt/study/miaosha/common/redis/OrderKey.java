@@ -8,7 +8,7 @@ package top.imyzt.study.miaosha.common.redis;
 public class OrderKey extends AbstractPrefix {
 
 
-    public OrderKey(String prefix) {
+    private OrderKey(String prefix) {
         super(prefix);
     }
 

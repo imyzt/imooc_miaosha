@@ -17,8 +17,12 @@ import top.imyzt.study.miaosha.result.Result;
 @RequestMapping("user")
 public class UserController {
 
+    private final MqSender sender;
+
     @Autowired
-    private MqSender sender;
+    public UserController(MqSender sender) {
+        this.sender = sender;
+    }
 
     @GetMapping("/info")
     public Result <MiaoshaUser> info(MiaoshaUser user) {

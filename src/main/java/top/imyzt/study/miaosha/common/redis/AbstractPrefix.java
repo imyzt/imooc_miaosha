@@ -11,11 +11,11 @@ public abstract class AbstractPrefix implements KeyPrefix {
 
     private String prefix;
 
-    public AbstractPrefix(String prefix) {
+    AbstractPrefix(String prefix) {
         this(0, prefix);
     }
 
-    public AbstractPrefix(int expireSeconds, String prefix) {
+    AbstractPrefix(int expireSeconds, String prefix) {
         this.expireSeconds = expireSeconds;
         this.prefix = prefix;
     }

@@ -2,16 +2,14 @@ package top.imyzt.study.miaosha.controller;
 
 import cn.hutool.core.util.ImageUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import top.imyzt.study.miaosha.access.AccessLimit;
 import top.imyzt.study.miaosha.common.redis.GoodsKey;
 import top.imyzt.study.miaosha.domain.MiaoshaOrder;
 import top.imyzt.study.miaosha.domain.MiaoshaUser;
-import top.imyzt.study.miaosha.domain.OrderInfo;
-import top.imyzt.study.miaosha.exception.GlobalException;
 import top.imyzt.study.miaosha.rabbitmq.MqSender;
 import top.imyzt.study.miaosha.rabbitmq.dto.MiaoshaMessage;
 import top.imyzt.study.miaosha.result.CodeMsg;
@@ -29,7 +27,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -42,22 +39,30 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class MiaoshaController implements InitializingBean {
 
-    @Autowired
-    private GoodsService goodsService;
+    private final GoodsService goodsService;
 
-    @Autowired
-    private RedisService redisService;
+    private final RedisService redisService;
 
-    @Autowired
-    private MiaoshaService miaoshaService;
+    private final MiaoshaService miaoshaService;
 
-    @Autowired
-    private MqSender sender;
+    private final MqSender sender;
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
 
     private static final Map<Long, Boolean> LOCAL_GOODS_MAP = new ConcurrentHashMap <>();
+
+    @Autowired
+    public MiaoshaController(GoodsService goodsService,
+                             RedisService redisService,
+                             MiaoshaService miaoshaService,
+                             MqSender sender,
+                             OrderService orderService) {
+        this.goodsService = goodsService;
+        this.redisService = redisService;
+        this.miaoshaService = miaoshaService;
+        this.sender = sender;
+        this.orderService = orderService;
+    }
 
     /**
      * 初始化系统时, 将所有商品的库存加入到redis缓存中
@@ -79,6 +84,7 @@ public class MiaoshaController implements InitializingBean {
      * 4.0 隐藏秒杀地址,秒杀地址超时自动失效
      * 5.0 增加验证码验证
      */
+    @AccessLimit(seconds = 5, maxCount = 5)
     @PostMapping("/{path}/do_miaosha")
     public @ResponseBody Result miaosha(MiaoshaUser user, Long goodsId, @PathVariable String path) {
 
@@ -142,6 +148,7 @@ public class MiaoshaController implements InitializingBean {
         return Result.success(orderId);
     }
 
+    @AccessLimit(seconds = 5, maxCount = 5)
     @GetMapping("path")
     public @ResponseBody Result getMiaoshaPath(MiaoshaUser user, Long goodsId, Integer verifyCode) {
 
@@ -156,7 +163,7 @@ public class MiaoshaController implements InitializingBean {
         // 校验验证码是否正确
         boolean code = miaoshaService.checkMiaoshaVerifyCode(user, goodsId, verifyCode);
         if (!code) {
-            return Result.error(CodeMsg.REQUEST_ILLEGAL);
+            return Result.error(CodeMsg.VERIFY_CODE_FAIL);
         }
 
         // 生成请求地址
@@ -165,6 +172,10 @@ public class MiaoshaController implements InitializingBean {
         return Result.success(path);
     }
 
+    /**
+     * 生成验证码, 防恶意刷请求. 5s max request < 50
+     */
+    @AccessLimit(seconds = 5, maxCount = 50)
     @GetMapping("verifyCode")
     public @ResponseBody Result getMiaoshaVerifyCode(HttpServletResponse response, MiaoshaUser user, Long goodsId) {
 

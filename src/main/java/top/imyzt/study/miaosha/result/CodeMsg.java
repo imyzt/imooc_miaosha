@@ -24,6 +24,8 @@ public class CodeMsg {
     public static CodeMsg SERVER_ERROR = new CodeMsg(500100, "服务端异常");
     public static CodeMsg BIND_ERROR = new CodeMsg(500101, "参数校验异常: %s");
     public static CodeMsg REQUEST_ILLEGAL = new CodeMsg(500102, "请求非法");
+    public static CodeMsg VERIFY_CODE_FAIL = new CodeMsg(500102, "验证码错误");
+    public static CodeMsg ACCESS_LIMIT_REACHED = new CodeMsg(500103, "请求太频繁了!");
 
 
     // 登录模块错误码
@@ -40,7 +42,7 @@ public class CodeMsg {
 
     public static CodeMsg MIAO_SHA_OVER = new CodeMsg(500500, "库存不足");
     public static CodeMsg REPEATE_MIAOSHA = new CodeMsg(500501, "不能重复下单");
-    public static CodeMsg MIAOSHA_FAIL = new CodeMsg(500501, "秒杀失败");
+    public static CodeMsg MIAOSHA_FAIL = new CodeMsg(500502, "秒杀失败");
 
 
     // 订单模块
@@ -50,7 +52,7 @@ public class CodeMsg {
 
     // 商品模块
 
-    public static CodeMsg GOODS_NOT_EXIST = new CodeMsg(500400, "商品不存在");
+    public static CodeMsg GOODS_NOT_EXIST = new CodeMsg(500600, "商品不存在");
 
 
 

@@ -69,11 +69,11 @@ public class MiaoshaService {
     }
 
     private void setGoodsOver(Long goodsId) {
-        redisService.set(MiaoshaKey.isGoodsOver, ""+goodsId, true);
+        redisService.set(MiaoshaKey.IS_GOODS_OVER, ""+goodsId, true);
     }
 
     private boolean getGoodsOver(Long goodsId) {
-        return redisService.exists(MiaoshaKey.isGoodsOver, ""+goodsId);
+        return redisService.exists(MiaoshaKey.IS_GOODS_OVER, ""+goodsId);
     }
 
     public String createMiaoshaPath(MiaoshaUser user, Long goodsId) {
@@ -81,7 +81,7 @@ public class MiaoshaService {
         String path = MD5Util.md5(RandomUtil.randomString(32) + "&*!@:LJ:");
 
         // 存入redis
-        redisService.set(MiaoshaKey.getMiaoshaPath, ""+user.getId()+"_"+goodsId, path);
+        redisService.set(MiaoshaKey.GET_MIAOSHA_PATH, ""+user.getId()+"_"+goodsId, path);
         return path;
     }
 
@@ -89,7 +89,7 @@ public class MiaoshaService {
         if (null == user || null == path) {
             return false;
         }
-        String pathOld = redisService.get(MiaoshaKey.getMiaoshaPath, "" + user.getId() + "_" + goodsId, String.class);
+        String pathOld = redisService.get(MiaoshaKey.GET_MIAOSHA_PATH, "" + user.getId() + "_" + goodsId, String.class);
         return Objects.equals(pathOld, path);
     }
 
@@ -126,7 +126,7 @@ public class MiaoshaService {
 
         // 将验证码存放到redis中
         int rnd = calc(verifyCode);
-        redisService.set(MiaoshaKey.getMiaoshaVerifyCode, ""+user.getId()+"_"+goodsId, rnd);
+        redisService.set(MiaoshaKey.GET_MIAOSHA_VERIFY_CODE, ""+user.getId()+"_"+goodsId, rnd);
 
         return image;
     }
@@ -146,11 +146,11 @@ public class MiaoshaService {
     }
 
     public boolean checkMiaoshaVerifyCode(MiaoshaUser user, Long goodsId, Integer verifyCode) {
-        Integer oldCode = redisService.get(MiaoshaKey.getMiaoshaVerifyCode, "" + user.getId() + "_" + goodsId, Integer.class);
+        Integer oldCode = redisService.get(MiaoshaKey.GET_MIAOSHA_VERIFY_CODE, "" + user.getId() + "_" + goodsId, Integer.class);
         if (null == oldCode || oldCode - verifyCode != 0) {
             return false;
         }
-        redisService.delete(MiaoshaKey.getMiaoshaVerifyCode, "" + user.getId() + "_" + goodsId);
+        redisService.delete(MiaoshaKey.GET_MIAOSHA_VERIFY_CODE, "" + user.getId() + "_" + goodsId);
         return true;
     }
 }

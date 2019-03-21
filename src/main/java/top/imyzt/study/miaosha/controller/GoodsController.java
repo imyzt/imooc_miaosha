@@ -72,58 +72,6 @@ public class GoodsController {
         return html;
     }
 
-    @GetMapping(value = "to_detail2/{goodsId}", produces = "text/html;charset=UTF-8")
-    public @ResponseBody String getDetail2(HttpServletRequest request, HttpServletResponse response,
-                            Model model, MiaoshaUser user, @PathVariable Long goodsId) {
-
-        model.addAttribute("user", user);
-
-        // 取缓存
-        String html = redisService.get(GoodsKey.getGoodsDetail, ""+goodsId, String.class);
-        if (StringUtils.isNotEmpty(html)) {
-            return html;
-        }
-
-        // 手动渲染
-        GoodsVo goodsVo = goodsService.getGoodsVoByGoodsId(goodsId);
-
-        long startTme = goodsVo.getStartDate().getTime();
-        long endTime = goodsVo.getEndDate().getTime();
-        long now = Instant.now().getEpochSecond() * 1000;
-
-        int miaoshaStatus;
-        int remainSeconds;
-
-        // 还没开始
-        if (now < startTme) {
-            miaoshaStatus = 0;
-            remainSeconds = (int) (startTme - now) / 1000;
-        // 已结束
-        } else if (now > endTime) {
-            miaoshaStatus = 2;
-            remainSeconds = -1;
-        } else {
-            miaoshaStatus = 1;
-            remainSeconds = 0;
-        }
-
-        model.addAttribute("user", user);
-        model.addAttribute("miaoshaStatus", miaoshaStatus);
-        model.addAttribute("remainSeconds", remainSeconds);
-        model.addAttribute("goods", goodsVo);
-
-
-        //构建返回数据
-
-        WebContext webContext = new WebContext(request, response, request.getServletContext(), request.getLocale(), model.asMap());
-        html = thymeleafViewResolver.getTemplateEngine().process("goods_detail", webContext);
-
-        if (StringUtils.isNotEmpty(html)) {
-            redisService.set(GoodsKey.getGoodsDetail, ""+goodsId, html);
-        }
-        return html;
-    }
-
     @GetMapping(value = "/detail/{goodsId}")
     public @ResponseBody Result <GoodsDetailVo> getDetail(MiaoshaUser user, @PathVariable Long goodsId) {
 

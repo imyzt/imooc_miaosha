@@ -23,10 +23,14 @@ import top.imyzt.study.miaosha.vo.OrderDetailVo;
 @Controller
 public class OrderController {
 
+    private final OrderService orderService;
+    private final GoodsService goodsService;
+
     @Autowired
-    private OrderService orderService;
-    @Autowired
-    private GoodsService goodsService;
+    public OrderController(OrderService orderService, GoodsService goodsService) {
+        this.orderService = orderService;
+        this.goodsService = goodsService;
+    }
 
     @GetMapping("detail")
     public @ResponseBody Result detail(MiaoshaUser user, Long orderId) {

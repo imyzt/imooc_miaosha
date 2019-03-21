@@ -19,5 +19,10 @@ public interface KeyPrefix {
      */
     String getPrefix();
 
+    /**
+     * 获取真正的key, 业务key
+     * @param key redis key
+     * @return 真正的key
+     */
     String getRealKey(String key);
 }
